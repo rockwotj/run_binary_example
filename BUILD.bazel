@@ -1,0 +1,28 @@
+# Add rules here to build your software
+# See https://docs.bazel.build/versions/master/build-ref.html#BUILD_files
+
+
+load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
+load("@bazel_skylib//rules:run_binary.bzl", "run_binary")
+
+run_binary(
+    name = "works",
+    srcs = ["@npm//:node_modules"],
+    outs = ["works_out.json"],
+    args = ["$(location :works_out.json)"],
+    tool = ":generate_file_binary",
+)
+
+run_binary(
+    name = "broken",
+    outs = ["broken_out.json"],
+    args = ["$(location :broken_out.json)"],
+    tool = ":generate_file_binary",
+)
+
+nodejs_binary(
+    name = "generate_file_binary",
+    data = ["@npm//:node_modules"],
+    entry_point = "generate_file.js",
+)
+
